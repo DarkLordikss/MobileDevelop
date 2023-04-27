@@ -22,8 +22,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
+import com.example.mobile.ui.theme.Red00
 
 @Composable
 fun RunScreen(textList: MutableState<List<String>>, blockList: MutableState<List<CodeBlock>>) {
@@ -78,7 +79,20 @@ fun DynamicTextDisplay(textList: MutableList<String>) {
             end = 16.dp
         )) {
         textList.forEach { text ->
-            Text(text = text)
+            if (text.length >= 5) {
+                if (text.slice(0..4) == "ERROR") {
+                    Text(
+                        text = text,
+                        color = Red00
+                    )
+                }
+                else {
+                    Text(text = text)
+                }
+            }
+            else {
+                Text(text = text)
+            }
         }
     }
 

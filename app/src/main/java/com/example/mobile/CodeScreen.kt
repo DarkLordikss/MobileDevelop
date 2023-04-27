@@ -84,17 +84,17 @@ fun BlockMenu(blockList: MutableState<List<CodeBlock>>) {
 
 //For TEST ONLY
 fun testVars(blockList: MutableState<List<CodeBlock>>) {
-    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "x", variableValue = -999))
-    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "y", variableValue = -777))
-    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "z", variableValue = 1111))
+    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "x", variableValue = "-999"))
+    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "y", variableValue = "-777"))
+    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "z", variableValue = "1111"))
 
-    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "x", variableValue = 3))
-    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "y", variableValue = 1))
-    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "z", variableValueName = "x"))
+    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "x", variableValue = "3"))
+    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "y", variableValue = "1"))
+    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "z", variableValue = "x"))
 
     val testBlock = VariableBlock()
     testBlock.setVariableName("TEST")
-    testBlock.setVariableValueName("z")
+    testBlock.setVariableValue("z")
 
     addBlockToList(blockList = blockList, newBlock = testBlock)
 }

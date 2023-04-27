@@ -12,3 +12,4 @@ val Pink40 = Color(0xFF7D5260)
 
 val Black00 = Color(0xFF000000)
 val White00 = Color(0xFFFFFFFF)
+val Red00 = Color(0xFFFF0000)

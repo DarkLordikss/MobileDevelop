@@ -1,19 +1,21 @@
 package com.example.mobile
 
 class VariableBlock(
-    variables: MutableMap<String, Int> = mutableMapOf(),
+    variables: MutableMap<String, String> = mutableMapOf(),
     private var variableName: String = "",
-    private var variableValueName: String = "",
-    private var variableValue: Int = 0
+    private var variableValue: String = "",
 ) : CodeBlock(variables) {
     override fun executeBlock() {
-        if (variableValueName == "") {
-            variables[variableName] = variableValue
+        if (variables[variableValue] == null) {
+            try {
+                variables[variableName] = variableValue.toDouble().toString()
+            }
+            catch (e: NumberFormatException) {
+                throw NumberFormatException("ERROR: Variable $variableValue is not exist!")
+            }
         }
         else {
-            if (variables[variableValueName] != null) {
-                variables[variableName] = variables[variableValueName]!!
-            }
+            variables[variableName] = variables[variableValue]!!
         }
     }
 
@@ -21,11 +23,7 @@ class VariableBlock(
         variableName = name
     }
 
-    fun setVariableValueName(name: String) {
-        variableValueName = name
-    }
-
-    fun setVariableValue(value: Int) {
+    fun setVariableValue(value: String) {
         variableValue = value
     }
 }
