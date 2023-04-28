@@ -5,7 +5,7 @@ class VariableBlock(
     private var variableName: String = "",
     private var variableValue: String = "",
 ) : CodeBlock(variables) {
-    override fun executeBlock() {
+    override fun executeBlock(): String {
         if (variables[variableValue] == null) {
             try {
                 variables[variableName] = variableValue.toDouble().toString()
@@ -17,6 +17,8 @@ class VariableBlock(
         else {
             variables[variableName] = variables[variableValue]!!
         }
+
+        return ""
     }
 
     fun setVariableName(name: String) {
