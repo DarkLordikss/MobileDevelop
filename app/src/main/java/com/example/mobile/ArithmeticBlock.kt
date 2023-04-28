@@ -2,8 +2,8 @@ package com.example.mobile
 
 class ArithmeticBlock (
     variables: MutableMap<String, Double> = mutableMapOf(),
-    private var variableFirst: String,
-    private var variableSecond: String,
+    private var variableFirst: String = "",
+    private var variableSecond: String = "",
     private var myOperator: Int,
     private val blockFirst: CodeBlock? = null,
     private val blockSecond: CodeBlock? = null
@@ -17,12 +17,14 @@ class ArithmeticBlock (
             if (firstOperand == null) {
                 try {
                     firstOperand = variableFirst.toDouble()
-                } catch (e: NumberFormatException){
-                    throw NumberFormatException("ERROR: check your mother bro, i think you don't have one")
+                }
+                catch (e: Exception){
+                    throw Exception("ERROR: Variable $variableFirst is not exist!")
                 }
             }
         }
         else {
+            blockFirst.variables = variables
             firstOperand = blockFirst.executeBlock().toDouble()
         }
 
@@ -31,12 +33,14 @@ class ArithmeticBlock (
             if (secondOperand == null) {
                 try {
                     secondOperand = variableSecond.toDouble()
-                } catch (e: NumberFormatException){
-                    throw NumberFormatException("ERROR: check your mother bro, i think you don't have one")
+                }
+                catch (e: Exception){
+                    throw Exception("ERROR: Variable $variableSecond is not exist!")
                 }
             }
         }
         else {
+            blockSecond.variables = variables
             secondOperand = blockSecond.executeBlock().toDouble()
         }
 
@@ -53,7 +57,14 @@ class ArithmeticBlock (
                 myAnswer = (firstOperand * secondOperand).toString()
             }
             3 -> {
-                myAnswer = (firstOperand / secondOperand).toString()
+                try {
+                    myAnswer = (firstOperand / secondOperand).toString()
+                }
+                catch (e: Exception) {
+                    throw Exception(
+                        "ERROR: Great Xi is don`t happy." +
+                        " You tried to divide $firstOperand to zero")
+                }
             }
             4 -> {
                 myAnswer = (Math.pow(firstOperand, secondOperand)).toString()

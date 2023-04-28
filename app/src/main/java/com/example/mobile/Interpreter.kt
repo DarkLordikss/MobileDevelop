@@ -23,7 +23,7 @@ fun interpretProgram(blockList: MutableState<List<CodeBlock>>,
                 Thread.sleep(100)
             }
         }
-        catch (e: NumberFormatException) {
+        catch (e: Exception) {
             addTextToList(textList = textList, newText = e.message!!)
         }
         finally {
