@@ -4,13 +4,23 @@ class ArithmeticBlock (
     variables: MutableMap<String, Double> = mutableMapOf(),
     private var variableFirst: String = "",
     private var variableSecond: String = "",
-    private var myOperator: Int,
+    private var myOperator: String = "",
     private val blockFirst: CodeBlock? = null,
     private val blockSecond: CodeBlock? = null
 ): CodeBlock(variables) {
     override fun executeBlock(): String {
+        val operatorsArray = mapOf(
+            "+" to 0,
+            "-" to 1,
+            "*" to 2,
+            "/" to 3,
+            "^" to 4,
+            "%" to 5
+        )
         var firstOperand: Double?
         var secondOperand: Double?
+
+        val operId = operatorsArray[myOperator]
 
         if (blockFirst == null) {
             firstOperand = variables[variableFirst]
@@ -46,7 +56,7 @@ class ArithmeticBlock (
 
         var myAnswer = ""
 
-        when (myOperator) {
+        when (operId) {
             0 -> {
                 myAnswer = (firstOperand + secondOperand).toString()
             }
@@ -57,13 +67,11 @@ class ArithmeticBlock (
                 myAnswer = (firstOperand * secondOperand).toString()
             }
             3 -> {
-                try {
-                    myAnswer = (firstOperand / secondOperand).toString()
-                }
-                catch (e: Exception) {
+                if (secondOperand!! == 0.0){
                     throw Exception(
                         "ERROR: Great Xi is don`t happy." +
-                        " You tried to divide $firstOperand to zero")
+                                " You tried to divide $firstOperand to zero"
+                    )
                 }
             }
             4 -> {

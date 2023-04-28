@@ -96,9 +96,9 @@ fun testVars(blockList: MutableState<List<CodeBlock>>) {
     testBlock.setVariableName("TEST")
     testBlock.setBlockValue(
         ArithmeticBlock(
-            variableFirst = "asd",
-            blockSecond = ArithmeticBlock(variableFirst = "x", variableSecond = "x", myOperator = 0),
-            myOperator = 1),
+            variableFirst = "4",
+            blockSecond = ArithmeticBlock(variableFirst = "x", variableSecond = "y", myOperator = "-"),
+            myOperator = "*"),
     )
 
     addBlockToList(blockList = blockList, newBlock = testBlock)
