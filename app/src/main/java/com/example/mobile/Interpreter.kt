@@ -8,7 +8,7 @@ fun interpretProgram(blockList: MutableState<List<CodeBlock>>,
                      textList: MutableState<List<String>>,
                      onComplete: () -> Unit
 ) {
-    val variables = mutableMapOf<String, String>()
+    val variables = mutableMapOf<String, Double>()
 
     GlobalScope.launch {
         try {
@@ -23,7 +23,7 @@ fun interpretProgram(blockList: MutableState<List<CodeBlock>>,
                 Thread.sleep(100)
             }
         }
-        catch (e: NumberFormatException) {
+        catch (e: Exception) {
             addTextToList(textList = textList, newText = e.message!!)
         }
         finally {

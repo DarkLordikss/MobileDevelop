@@ -1,5 +1,5 @@
 package com.example.mobile
 
-abstract class CodeBlock (var variables: MutableMap<String, String>) {
+abstract class CodeBlock (var variables: MutableMap<String, Double>) {
     abstract fun executeBlock() : String
 }

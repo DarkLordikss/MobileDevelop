@@ -88,13 +88,18 @@ fun testVars(blockList: MutableState<List<CodeBlock>>) {
     addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "y", variableValue = "-777"))
     addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "z", variableValue = "1111"))
 
-    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "x", variableValue = "3"))
+    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "x", variableValue = "3.5"))
     addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "y", variableValue = "1"))
     addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "z", variableValue = "x"))
 
     val testBlock = VariableBlock()
     testBlock.setVariableName("TEST")
-    testBlock.setVariableValue("z")
+    testBlock.setBlockValue(
+        ArithmeticBlock(
+            variableFirst = "4",
+            blockSecond = ArithmeticBlock(variableFirst = "x", variableSecond = "y", myOperator = "-"),
+            myOperator = "*"),
+    )
 
     addBlockToList(blockList = blockList, newBlock = testBlock)
 }
