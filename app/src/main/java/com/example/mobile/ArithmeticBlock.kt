@@ -1,12 +1,18 @@
 package com.example.mobile
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,7 +23,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.example.mobile.ui.theme.White00
+import java.io.Serializable
 
 class ArithmeticBlock (
     variables: MutableMap<String, Double> = mutableMapOf(),
@@ -26,7 +35,7 @@ class ArithmeticBlock (
     private var myOperator: String = "",
     private val blockFirst: CodeBlock? = null,
     private val blockSecond: CodeBlock? = null
-): CodeBlock(variables) {
+): CodeBlock(variables), Serializable {
     private val operatorsArray = mapOf(
         "+" to 0,
         "-" to 1,
@@ -118,14 +127,23 @@ class ArithmeticBlock (
         val selectedOperator = remember { mutableStateOf(myOperator) }
         var expanded by remember { mutableStateOf(false) }
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(10.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .border(2.dp, MaterialTheme.colorScheme.secondary, AlertDialogDefaults.shape)
+                .fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.primary)
+                .padding(10.dp)
+        ) {
             OutlinedTextField(
                 modifier = Modifier.width(100.dp),
                 value = firstState.value,
                 onValueChange = { newValue ->
                     setVariableFirst(newValue)
                 },
-                label = { Text("Operand 1") }
+                label = { Text("Operand 1", color = White00) },
             )
             IconButton(onClick = { expanded = true }) {
                 Text(text = selectedOperator.value)
@@ -155,7 +173,7 @@ class ArithmeticBlock (
                 onValueChange = { newValue ->
                     setVariableSecond(newValue)
                 },
-                label = { Text("Operand 2") }
+                label = { Text("Operand 2", color = White00) }
             )
         }
     }
@@ -168,5 +186,9 @@ class ArithmeticBlock (
     private fun setVariableSecond(secondValue: String) {
         _secondState.value = secondValue
         variableSecond = secondValue
+    }
+
+    companion object {
+        private const val serialVersionUID = 123455L
     }
 }

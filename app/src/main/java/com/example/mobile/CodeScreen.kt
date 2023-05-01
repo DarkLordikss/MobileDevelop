@@ -1,9 +1,12 @@
 package com.example.mobile
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.Divider
@@ -18,12 +21,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.burnoutcrew.reorderable.ReorderableItem
+import org.burnoutcrew.reorderable.detectReorderAfterLongPress
+import org.burnoutcrew.reorderable.rememberReorderableLazyListState
+import org.burnoutcrew.reorderable.reorderable
 
 @Composable
 fun CodeScreen(blockList: MutableState<List<CodeBlock>>) {
-    DynamicBlockDisplay(blockList = blockList)
+    VerticalReorderList(blockList = blockList)
     BlockMenu(blockList)
 }
 
@@ -32,6 +40,34 @@ fun DynamicBlockDisplay(blockList: MutableState<List<CodeBlock>>) {
     Column {
         blockList.value.forEach { block ->
             block.Display()
+        }
+    }
+}
+
+@Composable
+fun VerticalReorderList(blockList: MutableState<List<CodeBlock>>) {
+    val state = rememberReorderableLazyListState(onMove = { from, to ->
+        blockList.value = blockList.value.toMutableList().apply {
+            add(to.index, removeAt(from.index))
+        }
+    })
+    LazyColumn(
+        state = state.listState,
+        modifier = Modifier
+            .reorderable(state)
+            .detectReorderAfterLongPress(state)
+            .padding(top = 50.dp)
+    ) {
+        items(blockList.value, { it }) { block ->
+            ReorderableItem(state, key = block) { isDragging ->
+                val elevation = animateDpAsState(if (isDragging) 16.dp else 0.dp)
+                Column(
+                    modifier = Modifier
+                        .shadow(elevation.value)
+                ) {
+                    block.Display()
+                }
+            }
         }
     }
 }
