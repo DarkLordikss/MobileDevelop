@@ -3,10 +3,7 @@ package com.example.mobile
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.Divider
@@ -26,17 +23,15 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun CodeScreen(blockList: MutableState<List<CodeBlock>>) {
+    DynamicBlockDisplay(blockList = blockList)
     BlockMenu(blockList)
 }
 
 @Composable
-fun DynamicBlockDisplay(blockList: MutableList<CodeBlock>) {
-    Column (modifier = Modifier
-        .fillMaxWidth()
-        .verticalScroll(rememberScrollState())
-        .padding(16.dp)) {
-        blockList.forEach { block ->
-            /* TODO */
+fun DynamicBlockDisplay(blockList: MutableState<List<CodeBlock>>) {
+    Column {
+        blockList.value.forEach { block ->
+            block.Display()
         }
     }
 }
@@ -61,14 +56,33 @@ fun BlockMenu(blockList: MutableState<List<CodeBlock>>) {
                 fontSize = 18.sp,
                 modifier = Modifier
                     .padding(10.dp)
-                    .clickable(onClick = { testVars(blockList) })
+                    .clickable(onClick = {
+                        addBlockToList(
+                            blockList = blockList,
+                            newBlock = VariableBlock(
+                                variableName = "x",
+                                variableValue = "0"
+                            )
+                        )
+                    })
             )
             Text(
-                "Placeholder",
+                "Arithmetic",
                 fontSize = 18.sp,
                 modifier = Modifier
                     .padding(10.dp)
-                    .clickable(onClick = {})
+                    .clickable(
+                        onClick = {
+                            addBlockToList(
+                                blockList = blockList,
+                                newBlock = ArithmeticBlock(
+                                    variableFirst = "0",
+                                    variableSecond = "0",
+                                    myOperator = "+"
+                                )
+                            )
+                        }
+                    )
             )
             Divider()
             Text(
@@ -83,23 +97,23 @@ fun BlockMenu(blockList: MutableState<List<CodeBlock>>) {
 }
 
 //For TEST ONLY
-fun testVars(blockList: MutableState<List<CodeBlock>>) {
-    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "x", variableValue = "-999"))
-    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "y", variableValue = "-777"))
-    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "z", variableValue = "1111"))
-
-    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "x", variableValue = "3.5"))
-    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "y", variableValue = "1"))
-    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "z", variableValue = "x"))
-
-    val testBlock = VariableBlock()
-    testBlock.setVariableName("TEST")
-    testBlock.setBlockValue(
-        ArithmeticBlock(
-            variableFirst = "4",
-            blockSecond = ArithmeticBlock(variableFirst = "x", variableSecond = "y", myOperator = "-"),
-            myOperator = "*"),
-    )
-
-    addBlockToList(blockList = blockList, newBlock = testBlock)
-}
+//fun testVars(blockList: MutableState<List<CodeBlock>>) {
+//    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "x", variableValue = "-999"))
+//    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "y", variableValue = "-777"))
+//    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "z", variableValue = "1111"))
+//
+//    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "x", variableValue = "3.5"))
+//    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "y", variableValue = "1"))
+//    addBlockToList(blockList = blockList, newBlock = VariableBlock(variableName = "z", variableValue = "x"))
+//
+//    val testBlock = VariableBlock()
+//    testBlock.setVariableName("TEST")
+//    testBlock.setBlockValue(
+//        ArithmeticBlock(
+//            variableFirst = "4",
+//            blockSecond = ArithmeticBlock(variableFirst = "x", variableSecond = "y", myOperator = "-"),
+//            myOperator = "*"),
+//    )
+//
+//    addBlockToList(blockList = blockList, newBlock = testBlock)
+//}
