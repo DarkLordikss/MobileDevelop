@@ -3,7 +3,6 @@ package com.example.mobile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,9 +29,11 @@ class VariableBlock(
 ) : CodeBlock(variables), Serializable {
     private var _nameState = mutableStateOf(variableName)
     private var _valueState = mutableStateOf(variableValue)
+    private var _valueBlockState = mutableStateOf(blockValue)
 
     private val nameState: State<String> = _nameState
     private val valueState: State<String> = _valueState
+    private val valueBlockState: State<CodeBlock?> = _valueBlockState
 
     override fun executeBlock(): String {
         if (blockValue != null) {
@@ -64,7 +65,6 @@ class VariableBlock(
                 .padding(10.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .border(2.dp, MaterialTheme.colorScheme.secondary, shape)
-                .fillMaxWidth()
                 .background(color = MaterialTheme.colorScheme.primary)
                 .padding(10.dp)
         ) {
@@ -77,14 +77,19 @@ class VariableBlock(
                 label = { Text("Name", color = White00) }
             )
             Text(" = ")
-            OutlinedTextField(
-                modifier = Modifier.width(100.dp),
-                value = valueState.value,
-                onValueChange = { newValue ->
-                    setVariableValue(newValue)
-                },
-                label = { Text("Value", color = White00) }
-            )
+            if (valueBlockState.value == null) {
+                OutlinedTextField(
+                    modifier = Modifier.width(100.dp),
+                    value = valueState.value,
+                    onValueChange = { newValue ->
+                        setVariableValue(newValue)
+                    },
+                    label = { Text("Value", color = White00) }
+                )
+            }
+            else {
+                valueBlockState.value!!.Display()
+            }
         }
     }
 
@@ -99,6 +104,7 @@ class VariableBlock(
     }
 
     fun setBlockValue(value: CodeBlock) {
+        _valueBlockState.value = value
         blockValue = value
     }
 

@@ -133,7 +133,6 @@ class ArithmeticBlock (
                 .padding(10.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .border(2.dp, MaterialTheme.colorScheme.secondary, AlertDialogDefaults.shape)
-                .fillMaxWidth()
                 .background(color = MaterialTheme.colorScheme.primary)
                 .padding(10.dp)
         ) {

@@ -3,10 +3,14 @@ package com.example.mobile
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
@@ -39,15 +43,6 @@ fun CodeScreen(blockList: MutableState<List<CodeBlock>>) {
 }
 
 @Composable
-fun DynamicBlockDisplay(blockList: MutableState<List<CodeBlock>>) {
-    Column {
-        blockList.value.forEach { block ->
-            block.Display()
-        }
-    }
-}
-
-@Composable
 fun VerticalReorderList(blockList: MutableState<List<CodeBlock>>) {
     val state = rememberReorderableLazyListState(onMove = { from, to ->
         blockList.value = blockList.value.toMutableList().apply {
@@ -74,19 +69,32 @@ fun VerticalReorderList(blockList: MutableState<List<CodeBlock>>) {
                         .shadow(elevation.value)
                         .background(backgroundColor)
                         .clickable {
-                            if (selectedBlock == null) {
-                                selectedBlock = block
+                            selectedBlock = if (selectedBlock == null) {
+                                block
                             } else if (selectedBlock != block) {
                                 if (block is VariableBlock) {
                                     block.setBlockValue(selectedBlock!!)
+                                    blockList.value = blockList.value.toMutableList().apply {
+                                        remove(selectedBlock!!)
+                                    }
                                 }
-                                selectedBlock = null
+                                null
                             } else {
-                                selectedBlock = null
+                                null
                             }
                         }
                 ) {
-                    block.Display()
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 5.dp),
+                        contentPadding = PaddingValues(horizontal = 3.dp, vertical = 4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(1.dp)
+                    ) {
+                        item {
+                            block.Display()
+                        }
+                    }
                 }
             }
         }
