@@ -98,6 +98,10 @@ class VariableBlock(
         variableValue = value
     }
 
+    fun setBlockValue(value: CodeBlock) {
+        blockValue = value
+    }
+
     companion object {
         private const val serialVersionUID = 123456L
     }

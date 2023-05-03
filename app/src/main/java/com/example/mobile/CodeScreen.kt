@@ -1,6 +1,7 @@
 package com.example.mobile
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -22,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.burnoutcrew.reorderable.ReorderableItem
@@ -51,6 +54,9 @@ fun VerticalReorderList(blockList: MutableState<List<CodeBlock>>) {
             add(to.index, removeAt(from.index))
         }
     })
+
+    var selectedBlock: CodeBlock? by remember { mutableStateOf(null) }
+
     LazyColumn(
         state = state.listState,
         modifier = Modifier
@@ -61,9 +67,24 @@ fun VerticalReorderList(blockList: MutableState<List<CodeBlock>>) {
         items(blockList.value, { it }) { block ->
             ReorderableItem(state, key = block) { isDragging ->
                 val elevation = animateDpAsState(if (isDragging) 16.dp else 0.dp)
+                val backgroundColor =
+                    if (block == selectedBlock) MaterialTheme.colorScheme.primary.copy(alpha = 0.3f) else Color.Transparent
                 Column(
                     modifier = Modifier
                         .shadow(elevation.value)
+                        .background(backgroundColor)
+                        .clickable {
+                            if (selectedBlock == null) {
+                                selectedBlock = block
+                            } else if (selectedBlock != block) {
+                                if (block is VariableBlock) {
+                                    block.setBlockValue(selectedBlock!!)
+                                }
+                                selectedBlock = null
+                            } else {
+                                selectedBlock = null
+                            }
+                        }
                 ) {
                     block.Display()
                 }
