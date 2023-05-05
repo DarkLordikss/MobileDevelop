@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,11 +15,14 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -26,11 +30,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mobile.ui.theme.White00
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
@@ -42,6 +48,7 @@ fun CodeScreen(blockList: MutableState<List<CodeBlock>>) {
     BlockMenu(blockList)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VerticalReorderList(blockList: MutableState<List<CodeBlock>>) {
     val state = rememberReorderableLazyListState(onMove = { from, to ->
@@ -50,7 +57,13 @@ fun VerticalReorderList(blockList: MutableState<List<CodeBlock>>) {
         }
     })
 
+    val openDialogForArithmetic = remember {
+        mutableStateOf(false)
+    }
+
     var selectedBlock: CodeBlock? by remember { mutableStateOf(null) }
+    var secondSelectedBlock: CodeBlock? by remember { mutableStateOf(null) }
+    var firstSelectedBlock: CodeBlock? by remember { mutableStateOf(null) }
 
     LazyColumn(
         state = state.listState,
@@ -72,11 +85,17 @@ fun VerticalReorderList(blockList: MutableState<List<CodeBlock>>) {
                             selectedBlock = if (selectedBlock == null) {
                                 block
                             } else if (selectedBlock != block) {
-                                if (block is VariableBlock) {
+                                if (block is VariableBlock && selectedBlock is ArithmeticBlock) {
                                     block.setBlockValue(selectedBlock!!)
-                                    blockList.value = blockList.value.toMutableList().apply {
-                                        remove(selectedBlock!!)
-                                    }
+                                    blockList.value = blockList.value
+                                        .toMutableList()
+                                        .apply {
+                                            remove(selectedBlock!!)
+                                        }
+                                } else if (block is ArithmeticBlock && selectedBlock is ArithmeticBlock) {
+                                    secondSelectedBlock = block
+                                    firstSelectedBlock = selectedBlock
+                                    openDialogForArithmetic.value = true
                                 }
                                 null
                             } else {
@@ -95,6 +114,52 @@ fun VerticalReorderList(blockList: MutableState<List<CodeBlock>>) {
                             block.Display()
                         }
                     }
+                }
+            }
+        }
+    }
+
+    if (openDialogForArithmetic.value) {
+        ModalDrawerSheet (
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.Black.copy(alpha = 0f))
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Button(
+                    onClick = {
+                    (secondSelectedBlock as ArithmeticBlock).setFirstBlock(firstSelectedBlock!!)
+                    openDialogForArithmetic.value = false
+
+                    blockList.value = blockList.value
+                        .toMutableList()
+                        .apply {
+                            remove(firstSelectedBlock!!)
+                        }
+                    },
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(text = "To left operand", color = White00)
+                }
+                Button(
+                    onClick = {
+                    (secondSelectedBlock as ArithmeticBlock).setSecondBlock(firstSelectedBlock!!)
+                    openDialogForArithmetic.value = false
+
+                    blockList.value = blockList.value
+                        .toMutableList()
+                        .apply {
+                            remove(firstSelectedBlock!!)
+                        }
+                    },
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(text = "To right operand", color = White00)
                 }
             }
         }

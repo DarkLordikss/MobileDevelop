@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,8 +32,8 @@ class ArithmeticBlock (
     private var variableFirst: String = "",
     private var variableSecond: String = "",
     private var myOperator: String = "",
-    private val blockFirst: CodeBlock? = null,
-    private val blockSecond: CodeBlock? = null
+    private var blockFirst: CodeBlock? = null,
+    private var blockSecond: CodeBlock? = null
 ): CodeBlock(variables), Serializable {
     private val operatorsArray = mapOf(
         "+" to 0,
@@ -45,11 +44,15 @@ class ArithmeticBlock (
         "%" to 5
     )
 
-    private var _firstState = mutableStateOf(variableFirst)
-    private var _secondState = mutableStateOf(variableSecond)
+    private var _firstValueState = mutableStateOf(variableFirst)
+    private var _secondValueState = mutableStateOf(variableSecond)
+    private var _firstBlockState = mutableStateOf(blockFirst)
+    private var _secondBlockState = mutableStateOf(blockSecond)
 
-    private val firstState: State<String> = _firstState
-    private val secondState: State<String> = _secondState
+    private val firstValueState: State<String> = _firstValueState
+    private val secondValueState: State<String> = _secondValueState
+    private val firstBlockState: State<CodeBlock?> = _firstBlockState
+    private val secondBlockState: State<CodeBlock?> = _secondBlockState
 
     override fun executeBlock(): String {
         var firstOperand: Double?
@@ -69,8 +72,8 @@ class ArithmeticBlock (
             }
         }
         else {
-            blockFirst.variables = variables
-            firstOperand = blockFirst.executeBlock().toDouble()
+            blockFirst!!.variables = variables
+            firstOperand = blockFirst!!.executeBlock().toDouble()
         }
 
         if (blockSecond == null) {
@@ -85,8 +88,8 @@ class ArithmeticBlock (
             }
         }
         else {
-            blockSecond.variables = variables
-            secondOperand = blockSecond.executeBlock().toDouble()
+            blockSecond!!.variables = variables
+            secondOperand = blockSecond!!.executeBlock().toDouble()
         }
 
         var myAnswer = ""
@@ -102,12 +105,13 @@ class ArithmeticBlock (
                 myAnswer = (firstOperand * secondOperand).toString()
             }
             3 -> {
-                if (secondOperand!! == 0.0){
+                if (secondOperand == 0.0){
                     throw Exception(
                         "ERROR: Great Xi is don`t happy." +
                                 " You tried to divide $firstOperand to zero"
                     )
                 }
+                myAnswer = (firstOperand / secondOperand).toString()
             }
             4 -> {
                 myAnswer = (Math.pow(firstOperand, secondOperand)).toString()
@@ -136,14 +140,19 @@ class ArithmeticBlock (
                 .background(color = MaterialTheme.colorScheme.primary)
                 .padding(10.dp)
         ) {
-            OutlinedTextField(
-                modifier = Modifier.width(100.dp),
-                value = firstState.value,
-                onValueChange = { newValue ->
-                    setVariableFirst(newValue)
-                },
-                label = { Text("Operand 1", color = White00) },
-            )
+            if (firstBlockState.value == null) {
+                OutlinedTextField(
+                    modifier = Modifier.width(100.dp),
+                    value = firstValueState.value,
+                    onValueChange = { newValue ->
+                        setVariableFirst(newValue)
+                    },
+                    label = { Text("Operand 1", color = White00) },
+                )
+            }
+            else {
+                firstBlockState.value!!.Display()
+            }
             IconButton(onClick = { expanded = true }) {
                 Text(text = selectedOperator.value)
             }
@@ -166,25 +175,40 @@ class ArithmeticBlock (
                     )
                 }
             }
-            OutlinedTextField(
-                modifier = Modifier.width(100.dp),
-                value = secondState.value,
-                onValueChange = { newValue ->
-                    setVariableSecond(newValue)
-                },
-                label = { Text("Operand 2", color = White00) }
-            )
+            if (secondBlockState.value == null) {
+                OutlinedTextField(
+                    modifier = Modifier.width(100.dp),
+                    value = secondValueState.value,
+                    onValueChange = { newValue ->
+                        setVariableSecond(newValue)
+                    },
+                    label = { Text("Operand 2", color = White00) }
+                )
+            }
+            else {
+                secondBlockState.value!!.Display()
+            }
         }
     }
 
     private fun setVariableFirst(firstValue: String) {
-        _firstState.value = firstValue
+        _firstValueState.value = firstValue
         variableFirst = firstValue
     }
 
     private fun setVariableSecond(secondValue: String) {
-        _secondState.value = secondValue
+        _secondValueState.value = secondValue
         variableSecond = secondValue
+    }
+
+    fun setFirstBlock(block: CodeBlock) {
+        _firstBlockState.value = block
+        blockFirst = block
+    }
+
+    fun setSecondBlock(block: CodeBlock) {
+        _secondBlockState.value = block
+        blockSecond = block
     }
 
     companion object {
