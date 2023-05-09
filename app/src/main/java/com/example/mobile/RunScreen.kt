@@ -22,8 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.mobile.ui.theme.Green00
 import com.example.mobile.ui.theme.Red00
 
 @Composable
@@ -84,6 +84,12 @@ fun DynamicTextDisplay(textList: MutableList<String>) {
                     Text(
                         text = text,
                         color = Red00
+                    )
+                }
+                else if (text.slice(0..7) == "VARIABLE") {
+                    Text(
+                        text = text,
+                        color = Green00
                     )
                 }
                 else {

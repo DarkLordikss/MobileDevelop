@@ -43,9 +43,9 @@ import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
 
 @Composable
-fun CodeScreen(blockList: MutableState<List<CodeBlock>>) {
+fun CodeScreen(blockList: MutableState<List<CodeBlock>>, textList: MutableState<List<String>>) {
     VerticalReorderList(blockList = blockList)
-    BlockMenu(blockList)
+    BlockMenu(blockList = blockList, textList = textList)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,7 +70,7 @@ fun VerticalReorderList(blockList: MutableState<List<CodeBlock>>) {
         modifier = Modifier
             .reorderable(state)
             .detectReorderAfterLongPress(state)
-            .padding(top = 50.dp)
+            .padding(top = 50.dp, bottom = 80.dp)
     ) {
         items(blockList.value, { it }) { block ->
             ReorderableItem(state, key = block) { isDragging ->
@@ -86,6 +86,13 @@ fun VerticalReorderList(blockList: MutableState<List<CodeBlock>>) {
                                 block
                             } else if (selectedBlock != block) {
                                 if (block is VariableBlock && selectedBlock is ArithmeticBlock) {
+                                    block.setBlockValue(selectedBlock!!)
+                                    blockList.value = blockList.value
+                                        .toMutableList()
+                                        .apply {
+                                            remove(selectedBlock!!)
+                                        }
+                                } else if (block is OutputBlock && selectedBlock is ArithmeticBlock) {
                                     block.setBlockValue(selectedBlock!!)
                                     blockList.value = blockList.value
                                         .toMutableList()
@@ -171,7 +178,7 @@ fun addBlockToList(blockList: MutableState<List<CodeBlock>>, newBlock: CodeBlock
 }
 
 @Composable
-fun BlockMenu(blockList: MutableState<List<CodeBlock>>) {
+fun BlockMenu(blockList: MutableState<List<CodeBlock>>, textList: MutableState<List<String>>) {
     var expanded by remember { mutableStateOf(false) }
     Box {
         IconButton(onClick = { expanded = true }) {
@@ -214,9 +221,25 @@ fun BlockMenu(blockList: MutableState<List<CodeBlock>>) {
                         }
                     )
             )
+            Text(
+                "Output",
+                fontSize = 18.sp,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .clickable(
+                        onClick = {
+                            addBlockToList(
+                                blockList = blockList,
+                                newBlock = OutputBlock(
+                                    textList = textList
+                                )
+                            )
+                        }
+                    )
+            )
             Divider()
             Text(
-                "Placeholder",
+                "Placeholder!",
                 fontSize = 18.sp,
                 modifier = Modifier
                     .padding(10.dp)
