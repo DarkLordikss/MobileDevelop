@@ -239,7 +239,7 @@ fun BlockMenu(blockList: MutableState<List<CodeBlock>>, textList: MutableState<L
             )
             Divider()
             Text(
-                "Placeholder",
+                "Placeholder!",
                 fontSize = 18.sp,
                 modifier = Modifier
                     .padding(10.dp)
