@@ -222,6 +222,24 @@ fun BlockMenu(blockList: MutableState<List<CodeBlock>>, textList: MutableState<L
                     )
             )
             Text(
+                "While",
+                fontSize = 18.sp,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .clickable(
+                        onClick = {
+                            var cycle = CycleBlock(textList = textList)
+                            cycle.addNewBlockToBlockList(valueCodeBlock = OutputBlock(textList = textList, valueToPrint = "Test"))
+                            addBlockToList(
+                                blockList = blockList,
+                                newBlock = CycleBlock(
+                                    textList = textList
+                                )
+                            )
+                        }
+                    )
+            )
+            Text(
                 "Output",
                 fontSize = 18.sp,
                 modifier = Modifier
