@@ -6,9 +6,9 @@ import kotlinx.coroutines.launch
 
 fun interpretProgram(blockList: MutableState<List<CodeBlock>>,
                      textList: MutableState<List<String>>,
+                     variables: MutableMap<String, Double> = mutableMapOf<String, Double>(),
                      onComplete: () -> Unit
 ) {
-    val variables = mutableMapOf<String, Double>()
 
     GlobalScope.launch {
         try {
