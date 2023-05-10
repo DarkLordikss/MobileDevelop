@@ -228,13 +228,12 @@ fun BlockMenu(blockList: MutableState<List<CodeBlock>>, textList: MutableState<L
                     .padding(10.dp)
                     .clickable(
                         onClick = {
-                            var cycle = CycleBlock(textList = textList)
-                            cycle.addNewBlockToBlockList(valueCodeBlock = OutputBlock(textList = textList, valueToPrint = "Test"))
+                            val cycle = CycleBlock(textList = textList)
+                            cycle.addNewBlockToBlockList(valueCodeBlock = VariableBlock(variableName = "z", variableValue = "7"))
+                            cycle.addNewBlockToBlockList(valueCodeBlock = OutputBlock(textList = textList, valueToPrint = "z"))
                             addBlockToList(
                                 blockList = blockList,
-                                newBlock = CycleBlock(
-                                    textList = textList
-                                )
+                                newBlock = cycle
                             )
                         }
                     )
