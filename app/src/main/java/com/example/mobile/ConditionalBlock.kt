@@ -1,5 +1,7 @@
 package com.example.mobile
 
+import androidx.compose.runtime.Composable
+
 class ConditionalBlock(
     variables: MutableMap<String, Double> = mutableMapOf(),
     private var booleanBlock: BooleanBlock,
@@ -20,5 +22,10 @@ class ConditionalBlock(
         }
 
         return "0"
+    }
+
+    @Composable
+    override fun Display() {
+        TODO("Not yet implemented")
     }
 }
