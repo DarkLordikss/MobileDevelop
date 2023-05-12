@@ -18,10 +18,10 @@ fun interpretProgram(blockList: MutableState<List<CodeBlock>>,
             }
 
             //For TEST ONLY
-            variables.forEach { (key, value) ->
-                addTextToList(textList = textList, newText = "VARIABLE $key = $value")
-                Thread.sleep(100)
-            }
+//            variables.forEach { (key, value) ->
+//                addTextToList(textList = textList, newText = "VARIABLE $key = $value")
+//                Thread.sleep(100)
+//            }
         }
         catch (e: Exception) {
             addTextToList(textList = textList, newText = e.message!!)
