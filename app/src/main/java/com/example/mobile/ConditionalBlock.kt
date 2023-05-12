@@ -32,12 +32,13 @@ class ConditionalBlock(
     override fun executeBlock(): String {
         booleanBlock.variables = variables
         val condition = booleanBlock.executeBlock()
+
+        if (trueNode.value.isEmpty()) {
+            throw Exception("ERROR: empty Conditional Block body")
+        }
+
         if (condition.toDouble() > 0){
-            if (trueNode.value.isNotEmpty()){
-                interpretProgram(blockList = trueNode, textList = textList, isInner = true, variables = variables){}
-            } else {
-                throw Exception("ERROR: empty Conditional Block body")
-            }
+            interpretProgram(blockList = trueNode, textList = textList, isInner = true, variables = variables){}
         } else {
             if (falseNode.value.isNotEmpty()){
                 interpretProgram(blockList = falseNode, textList = textList, isInner = true, variables = variables){}
