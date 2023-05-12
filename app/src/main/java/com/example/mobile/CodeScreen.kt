@@ -255,6 +255,24 @@ fun BlockMenu(blockList: MutableState<List<CodeBlock>>, textList: MutableState<L
                         }
                     )
             )
+            Text(
+                "Conditional",
+                fontSize = 18.sp,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .clickable(
+                        onClick = {
+                            addBlockToList(
+                                blockList = blockList,
+                                newBlock = ConditionalBlock(
+                                    booleanBlock = BooleanBlock(leftVariable = "x",
+                                        rightVariable = "1", condition = "=="),
+                                    textList = textList
+                                )
+                            )
+                        }
+                    )
+            )
             Divider()
             Text(
                 "Placeholder!",
