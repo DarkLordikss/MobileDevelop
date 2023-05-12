@@ -99,7 +99,29 @@ fun VerticalReorderList(blockList: MutableState<List<CodeBlock>>) {
                                         .apply {
                                             remove(selectedBlock!!)
                                         }
+                                } else if (block is OutputBlock && selectedBlock is BooleanBlock) {
+                                    block.setBlockValue(selectedBlock!!)
+                                    blockList.value = blockList.value
+                                        .toMutableList()
+                                        .apply {
+                                            remove(selectedBlock!!)
+                                        }
                                 } else if (block is ArithmeticBlock && selectedBlock is ArithmeticBlock) {
+                                    secondSelectedBlock = block
+                                    firstSelectedBlock = selectedBlock
+                                    openDialogForArithmetic.value = true
+                                } else if (block is BooleanBlock && selectedBlock is BooleanBlock) {
+                                    secondSelectedBlock = block
+                                    firstSelectedBlock = selectedBlock
+                                    openDialogForArithmetic.value = true
+                                } else if (block is ConditionalBlock && selectedBlock is BooleanBlock) {
+                                    block.addCondition(selectedBlock!!)
+                                    blockList.value = blockList.value
+                                        .toMutableList()
+                                        .apply {
+                                            remove(selectedBlock!!)
+                                        }
+                                } else if (block is ConditionalBlock) {
                                     secondSelectedBlock = block
                                     firstSelectedBlock = selectedBlock
                                     openDialogForArithmetic.value = true
@@ -140,33 +162,77 @@ fun VerticalReorderList(blockList: MutableState<List<CodeBlock>>) {
             ) {
                 Button(
                     onClick = {
-                    (secondSelectedBlock as ArithmeticBlock).setFirstBlock(firstSelectedBlock!!)
-                    openDialogForArithmetic.value = false
+                        when (secondSelectedBlock) {
+                            is ArithmeticBlock -> {
+                                (secondSelectedBlock as ArithmeticBlock).setFirstBlock(
+                                    firstSelectedBlock!!
+                                )
+                            }
 
-                    blockList.value = blockList.value
-                        .toMutableList()
-                        .apply {
-                            remove(firstSelectedBlock!!)
+                            is BooleanBlock -> {
+                                (secondSelectedBlock as BooleanBlock).setFirstBlock(
+                                    firstSelectedBlock!!
+                                )
+                            }
+
+                            is ConditionalBlock -> {
+                                (secondSelectedBlock as ConditionalBlock).addToTrueNode(
+                                    firstSelectedBlock!!
+                                )
+                            }
                         }
+                        openDialogForArithmetic.value = false
+                        blockList.value = blockList.value
+                            .toMutableList()
+                            .apply {
+                                remove(firstSelectedBlock!!)
+                            }
                     },
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    Text(text = "To left operand", color = White00)
+                    if (secondSelectedBlock is ConditionalBlock){
+                        Text(text = "To if", color = White00)
+                    }
+                    else {
+                        Text(text = "To left operand", color = White00)
+                    }
                 }
                 Button(
                     onClick = {
-                    (secondSelectedBlock as ArithmeticBlock).setSecondBlock(firstSelectedBlock!!)
-                    openDialogForArithmetic.value = false
+                        when (secondSelectedBlock) {
+                            is ArithmeticBlock -> {
+                                (secondSelectedBlock as ArithmeticBlock).setSecondBlock(
+                                    firstSelectedBlock!!
+                                )
+                            }
 
-                    blockList.value = blockList.value
-                        .toMutableList()
-                        .apply {
-                            remove(firstSelectedBlock!!)
+                            is BooleanBlock -> {
+                                (secondSelectedBlock as BooleanBlock).setSecondBlock(
+                                    firstSelectedBlock!!
+                                )
+                            }
+
+                            is ConditionalBlock -> {
+                                (secondSelectedBlock as ConditionalBlock).addToFalseNode(
+                                    firstSelectedBlock!!
+                                )
+                            }
                         }
-                    },
-                    modifier = Modifier.padding(16.dp)
+                        openDialogForArithmetic.value = false
+                        blockList.value = blockList.value
+                            .toMutableList()
+                            .apply {
+                                remove(firstSelectedBlock!!)
+                            }
+                        },
+                        modifier = Modifier.padding(16.dp)
                 ) {
-                    Text(text = "To right operand", color = White00)
+                    if (secondSelectedBlock is ConditionalBlock) {
+                        Text(text = "To else", color = White00)
+                    }
+                    else {
+                        Text(text = "To right operand", color = White00)
+                    }
                 }
             }
         }
@@ -248,6 +314,42 @@ fun BlockMenu(blockList: MutableState<List<CodeBlock>>, textList: MutableState<L
                             addBlockToList(
                                 blockList = blockList,
                                 newBlock = OutputBlock(
+                                    textList = textList
+                                )
+                            )
+                        }
+                    )
+            )
+            Text(
+                "Boolean",
+                fontSize = 18.sp,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .clickable(
+                        onClick = {
+                            addBlockToList(
+                                blockList = blockList,
+                                newBlock = BooleanBlock(
+                                    leftVariable = "x",
+                                    condition = "==",
+                                    rightVariable = "y"
+                                )
+                            )
+                        }
+                    )
+            )
+            Text(
+                "Conditional",
+                fontSize = 18.sp,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .clickable(
+                        onClick = {
+                            addBlockToList(
+                                blockList = blockList,
+                                newBlock = ConditionalBlock(
+                                    booleanBlock = BooleanBlock(leftVariable = "x",
+                                        rightVariable = "1", condition = "=="),
                                     textList = textList
                                 )
                             )
