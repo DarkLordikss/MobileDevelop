@@ -2,57 +2,51 @@ package com.example.mobile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialogDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.unit.dp
-import com.example.mobile.ui.theme.White00
 import java.io.Serializable
 
 class ConditionalBlock(
     variables: MutableMap<String, Double> = mutableMapOf(),
-    private var booleanBlock: BooleanBlock,
+    private var booleanBlock: CodeBlock,
     private val trueNode: MutableState<List<CodeBlock>> = mutableStateOf(emptyList()),
     private val falseNode: MutableState<List<CodeBlock>> = mutableStateOf(emptyList()),
     private var textList: MutableState<List<String>>,
 ): CodeBlock(variables), Serializable {
+    private var _booleanBlockState = mutableStateOf(booleanBlock)
+
+    private val booleanBlockState: State<CodeBlock> = _booleanBlockState
     override fun executeBlock(): String {
-        var condition = booleanBlock.executeBlock()
+        booleanBlock.variables = variables
+        val condition = booleanBlock.executeBlock()
         if (condition.toDouble() > 0){
             if (trueNode.value.isNotEmpty()){
-                interpretProgram(blockList = trueNode, textList = textList, isInner = true){}
-            }else{
+                interpretProgram(blockList = trueNode, textList = textList, isInner = true, variables = variables){}
+            } else {
                 throw Exception("ERROR: empty Conditional Block body")
             }
+        } else {
             if (falseNode.value.isNotEmpty()){
-                interpretProgram(blockList = falseNode, textList = textList, isInner = true){}
+                interpretProgram(blockList = falseNode, textList = textList, isInner = true, variables = variables){}
             }
         }
 
         return "0"
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Display() {
         Row(
@@ -64,18 +58,16 @@ class ConditionalBlock(
                 .background(color = MaterialTheme.colorScheme.primary)
                 .padding(10.dp)
         ) {
-            Column(
-
-            ) {
-                Row() {
+            Column {
+                Row {
                     Text(text = "if: ")
-                    booleanBlock.Display()
+                    booleanBlockState.value.Display()
                 }
                 trueNode.value.forEach { block ->
                     block.Display()
                 }
                 if (falseNode.value.isNotEmpty()){
-                    Row() {
+                    Row {
                         Text(text = "else: ")
                     }
                     falseNode.value.forEach { block ->
@@ -86,11 +78,15 @@ class ConditionalBlock(
         }
     }
 
-    fun addToTrueNode(block:CodeBlock){
+    fun addCondition(block:CodeBlock) {
+        _booleanBlockState.value = block
+        booleanBlock = block
+    }
+    fun addToTrueNode(block:CodeBlock) {
         trueNode.value = trueNode.value + block
     }
 
-    fun addToFalseNode(block:CodeBlock){
+    fun addToFalseNode(block:CodeBlock) {
         falseNode.value = falseNode.value + block
     }
 
