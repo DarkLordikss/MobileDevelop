@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.mobile.ui.theme.White00
+import java.io.Serializable
 
 class BooleanBlock(
     variables: MutableMap<String, Double> = mutableMapOf(),
@@ -33,7 +34,7 @@ class BooleanBlock(
     private var condition: String = "",
     private var leftBlock: CodeBlock? = null,
     private var rightBlock: CodeBlock? = null
-): CodeBlock(variables)  {
+): CodeBlock(variables), Serializable {
     private var _leftValueState = mutableStateOf(leftVariable)
     private var _rightValueState = mutableStateOf(rightVariable)
     private var _leftBlockState = mutableStateOf(leftBlock)
@@ -246,5 +247,9 @@ class BooleanBlock(
     fun setSecondBlock(block: CodeBlock) {
         _rightBlockState.value = block
         rightBlock = block
+    }
+
+    companion object {
+        private const val serialVersionUID = 123356L
     }
 }
