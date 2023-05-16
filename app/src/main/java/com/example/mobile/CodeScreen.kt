@@ -368,6 +368,23 @@ fun BlockMenu(blockList: MutableState<List<CodeBlock>>, textList: MutableState<L
                         }
                     )
             )
+            Text(
+                "Init Array",
+                fontSize = 18.sp,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .clickable(
+                        onClick = {
+                            addBlockToList(
+                                blockList = blockList,
+                                newBlock = InitArrayBlock(
+                                    variableName = "array",
+                                    variableLength = "1"
+                                )
+                            )
+                        }
+                    )
+            )
             Divider()
             Text(
                 "Placeholder!",
