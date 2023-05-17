@@ -36,6 +36,6 @@ class CycleBlock (
         LocalBlockList.value = LocalBlockList.value + valueCodeBlock
     }
     companion object {
-        private const val serialVersionUID = 123444L
+        private const val serialVersionUID = 172256L
     }
 }
