@@ -69,84 +69,88 @@ fun VerticalReorderList(blockList: MutableState<List<CodeBlock>>) {
     var selectedBlock: CodeBlock? by remember { mutableStateOf(null) }
     var secondSelectedBlock: CodeBlock? by remember { mutableStateOf(null) }
     var firstSelectedBlock: CodeBlock? by remember { mutableStateOf(null) }
-LazyColumn(
-        state = state.listState,
-        modifier = Modifier
-            .reorderable(state)
-            .detectReorderAfterLongPress(state)
-            .padding(top = 50.dp, bottom = 80.dp)
-    ) {
-        items(blockList.value, { it }) { block ->
-            ReorderableItem(state, key = block) { isDragging ->
-                val elevation = animateDpAsState(if (isDragging) 16.dp else 0.dp)
-                val backgroundColor =
-                    if (block == selectedBlock) MaterialTheme.colorScheme.primary.copy(alpha = 0.3f) else Color.Transparent
-                Column(
-                    modifier = Modifier
-                        .shadow(elevation.value)
-                        .background(backgroundColor)
-                        .clickable {
-                            selectedBlock = if (selectedBlock == null) {
-                                block
-                            } else if (selectedBlock != block) {
-                                if (block is VariableBlock && selectedBlock is ArithmeticBlock) {
-                                    block.setBlockValue(selectedBlock!!)
-                                    blockList.value = blockList.value
-                                        .toMutableList()
-                                        .apply {
-                                            remove(selectedBlock!!)
-                                        }
-                                } else if (block is OutputBlock && selectedBlock is ArithmeticBlock) {
-                                    block.setBlockValue(selectedBlock!!)
-                                    blockList.value = blockList.value
-                                        .toMutableList()
-                                        .apply {
-                                            remove(selectedBlock!!)
-                                        }
-                                } else if (block is OutputBlock && selectedBlock is BooleanBlock) {
-                                    block.setBlockValue(selectedBlock!!)
-                                    blockList.value = blockList.value
-                                        .toMutableList()
-                                        .apply {
-                                            remove(selectedBlock!!)
-                                        }
-                                } else if (block is ArithmeticBlock && selectedBlock is ArithmeticBlock) {
-                                    secondSelectedBlock = block
-                                    firstSelectedBlock = selectedBlock
-                                    openDialogForArithmetic.value = true
-                                } else if (block is BooleanBlock && selectedBlock is BooleanBlock) {
-                                    secondSelectedBlock = block
-                                    firstSelectedBlock = selectedBlock
-                                    openDialogForArithmetic.value = true
-                                } else if (block is ConditionalBlock && selectedBlock is BooleanBlock) {
-                                    block.addCondition(selectedBlock!!)
-                                    blockList.value = blockList.value
-                                        .toMutableList()
-                                        .apply {
-                                            remove(selectedBlock!!)
-                                        }
-                                } else if (block is CycleBlock && selectedBlock is BooleanBlock) {
-                                    block.addCondition(selectedBlock!!)
-                                    blockList.value = blockList.value
-                                        .toMutableList()
-                                        .apply {
-                                            remove(selectedBlock!!)
-                                        }
-                                } else if (block is ConditionalBlock) {
-                                    secondSelectedBlock = block
-                                    firstSelectedBlock = selectedBlock
-                                    openDialogForArithmetic.value = true
-                                } else if (block is CycleBlock) {
-                                    block.addToLocalBlockList(selectedBlock!!)
-                                    blockList.value = blockList.value
-                                        .toMutableList()
-                                        .apply {
-                                            remove(selectedBlock!!)
-                                        }
+
+    Box (modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            state = state.listState,
+            modifier = Modifier
+                .reorderable(state)
+                .detectReorderAfterLongPress(state)
+                .padding(top = 50.dp, bottom = 80.dp)
+                .fillMaxHeight()
+        ) {
+            items(blockList.value, { it }) { block ->
+                ReorderableItem(state, key = block) { isDragging ->
+                    val elevation = animateDpAsState(if (isDragging) 16.dp else 0.dp)
+                    val backgroundColor =
+                        if (block == selectedBlock) MaterialTheme.colorScheme.primary.copy(alpha = 0.3f) else Color.Transparent
+                    Column(
+                        modifier = Modifier
+                            .shadow(elevation.value)
+                            .background(backgroundColor)
+                            .clickable {
+                                selectedBlock = if (selectedBlock == null) {
+                                    block
+                                } else if (selectedBlock != block) {
+                                    if (block is VariableBlock && selectedBlock is ArithmeticBlock) {
+                                        block.setBlockValue(selectedBlock!!)
+                                        blockList.value = blockList.value
+                                            .toMutableList()
+                                            .apply {
+                                                remove(selectedBlock!!)
+                                            }
+                                    } else if (block is OutputBlock && selectedBlock is ArithmeticBlock) {
+                                        block.setBlockValue(selectedBlock!!)
+                                        blockList.value = blockList.value
+                                            .toMutableList()
+                                            .apply {
+                                                remove(selectedBlock!!)
+                                            }
+                                    } else if (block is OutputBlock && selectedBlock is BooleanBlock) {
+                                        block.setBlockValue(selectedBlock!!)
+                                        blockList.value = blockList.value
+                                            .toMutableList()
+                                            .apply {
+                                                remove(selectedBlock!!)
+                                            }
+                                    } else if (block is ArithmeticBlock && selectedBlock is ArithmeticBlock) {
+                                        secondSelectedBlock = block
+                                        firstSelectedBlock = selectedBlock
+                                        openDialogForArithmetic.value = true
+                                    } else if (block is BooleanBlock && selectedBlock is BooleanBlock) {
+                                        secondSelectedBlock = block
+                                        firstSelectedBlock = selectedBlock
+                                        openDialogForArithmetic.value = true
+                                    } else if (block is ConditionalBlock && selectedBlock is BooleanBlock) {
+                                        block.addCondition(selectedBlock!!)
+                                        blockList.value = blockList.value
+                                            .toMutableList()
+                                            .apply {
+                                                remove(selectedBlock!!)
+                                            }
+                                    } else if (block is CycleBlock && selectedBlock is BooleanBlock) {
+                                        block.addCondition(selectedBlock!!)
+                                        blockList.value = blockList.value
+                                            .toMutableList()
+                                            .apply {
+                                                remove(selectedBlock!!)
+                                            }
+                                    } else if (block is ConditionalBlock) {
+                                        secondSelectedBlock = block
+                                        firstSelectedBlock = selectedBlock
+                                        openDialogForArithmetic.value = true
+                                    } else if (block is CycleBlock) {
+                                        block.addToLocalBlockList(selectedBlock!!)
+                                        blockList.value = blockList.value
+                                            .toMutableList()
+                                            .apply {
+                                                remove(selectedBlock!!)
+                                            }
+                                    }
+                                    null
+                                } else {
+                                    null
                                 }
-                                null
-                            } else {
-                                null
                             }
                     ) {
                         LazyRow(
@@ -187,7 +191,6 @@ LazyColumn(
             }
         }
     }
-
     if (openDialogForArithmetic.value) {
         ModalDrawerSheet (
             modifier = Modifier
@@ -264,8 +267,8 @@ LazyColumn(
                             .apply {
                                 remove(firstSelectedBlock!!)
                             }
-                        },
-                        modifier = Modifier.padding(16.dp)
+                    },
+                    modifier = Modifier.padding(16.dp)
                 ) {
                     if (secondSelectedBlock is ConditionalBlock) {
                         Text(text = "To else", color = White00)
