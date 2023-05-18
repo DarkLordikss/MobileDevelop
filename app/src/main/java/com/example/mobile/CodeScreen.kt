@@ -121,10 +121,24 @@ fun VerticalReorderList(blockList: MutableState<List<CodeBlock>>) {
                                         .apply {
                                             remove(selectedBlock!!)
                                         }
+                                } else if (block is CycleBlock && selectedBlock is BooleanBlock) {
+                                    block.addCondition(selectedBlock!!)
+                                    blockList.value = blockList.value
+                                        .toMutableList()
+                                        .apply {
+                                            remove(selectedBlock!!)
+                                        }
                                 } else if (block is ConditionalBlock) {
                                     secondSelectedBlock = block
                                     firstSelectedBlock = selectedBlock
                                     openDialogForArithmetic.value = true
+                                } else if (block is CycleBlock) {
+                                    block.addToLocalBlockList(selectedBlock!!)
+                                    blockList.value = blockList.value
+                                        .toMutableList()
+                                        .apply {
+                                            remove(selectedBlock!!)
+                                        }
                                 }
                                 null
                             } else {
@@ -294,12 +308,13 @@ fun BlockMenu(blockList: MutableState<List<CodeBlock>>, textList: MutableState<L
                     .padding(10.dp)
                     .clickable(
                         onClick = {
-                            val cycle = CycleBlock(textList = textList)
-                            cycle.addNewBlockToBlockList(valueCodeBlock = VariableBlock(variableName = "z", variableValue = "7"))
-                            cycle.addNewBlockToBlockList(valueCodeBlock = OutputBlock(textList = textList, valueToPrint = "z"))
                             addBlockToList(
                                 blockList = blockList,
-                                newBlock = cycle
+                                newBlock = CycleBlock(
+                                    booleanBlock = BooleanBlock(leftVariable = "x",
+                                        rightVariable = "1", condition = "=="),
+                                    textList = textList
+                                )
                             )
                         }
                     )
