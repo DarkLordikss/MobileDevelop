@@ -62,8 +62,8 @@ class ArithmeticBlock (
 
 
         if (blockFirst == null) {
-            variableFirst = getNormalizedName(variableFirst, variables)
-            firstOperand = variables[variableFirst]
+            var _variableFirst = getNormalizedName(variableFirst, variables)
+            firstOperand = variables[_variableFirst]
             if (firstOperand == null) {
                 try {
                     firstOperand = variableFirst.toDouble()
@@ -79,8 +79,8 @@ class ArithmeticBlock (
         }
 
         if (blockSecond == null) {
-            variableSecond = getNormalizedName(variableSecond, variables)
-            secondOperand = variables[variableSecond]
+            var _variableSecond = getNormalizedName(variableSecond, variables)
+            secondOperand = variables[_variableSecond]
             if (secondOperand == null) {
                 try {
                     secondOperand = variableSecond.toDouble()

@@ -62,7 +62,7 @@ class BooleanBlock(
         val conditionID = conditionsArray[condition]
 
         if (leftBlock == null) {
-            leftVariable = getNormalizedName(leftVariable, variables)
+            var _leftVariable = getNormalizedName(leftVariable, variables)
             firstOperand = variables[leftVariable]
             if (firstOperand == null) {
                 try {
@@ -79,8 +79,8 @@ class BooleanBlock(
         }
 
         if (rightBlock == null) {
-            rightVariable = getNormalizedName(rightVariable, variables)
-            secondOperand = variables[rightVariable]
+            var _rightVariable = getNormalizedName(rightVariable, variables)
+            secondOperand = variables[_rightVariable]
             if (secondOperand == null) {
                 try {
                     secondOperand = rightVariable.toDouble()

@@ -41,9 +41,9 @@ class InitArrayBlock(
             blockLength!!.variables = variables
             arrayLength = blockLength!!.executeBlock().toInt()
         } else {
-            variableLength = getNormalizedName(variableLength, variables)
+            var _variableLength = getNormalizedName(variableLength, variables)
 
-            if (variables[variableLength] == null) {
+            if (variables[_variableLength] == null) {
                 try {
                     arrayLength = variableLength.toInt()
                 } catch (e: Exception) {
@@ -52,7 +52,7 @@ class InitArrayBlock(
             }
             else{
                 try {
-                    arrayLength = variables[variableLength]!!.toInt()
+                    arrayLength = variables[_variableLength]!!.toInt()
                 } catch (e: Exception) {
                     throw Exception("ERROR: Variable $variableLength is not exist!")
                 }
