@@ -35,7 +35,8 @@ class OutputBlock(
     private val valueBlockState: State<CodeBlock?> = _valueBlockState
 
     override fun executeBlock(): String {
-        val value = variables[valueToPrint]
+        var normalValueToPrint = getNormalizedName(valueToPrint, variables)
+        val value = variables[normalValueToPrint]
 
         if (blockValue != null) {
             blockValue!!.variables = variables
@@ -87,6 +88,29 @@ class OutputBlock(
     fun setBlockValue(value: CodeBlock) {
         _valueBlockState.value = value
         blockValue = value
+    }
+
+    private fun getNormalizedName(name: String, variables: MutableMap<String, Double>): String {
+        val regular_name = "(?:[a-zA-Z]+[-_]*)+".toRegex()
+        var new_name = name
+        println("renaming start: ${new_name}")
+        if (checkArrayIndex(name)){
+            val matches = regular_name.findAll(name).map{it.value}.toList()
+            try {
+                new_name = "${matches[0]}[${variables[matches[1]]!!.toInt()}]"
+            }
+            catch (e: Exception) {
+                throw Exception("ERROR: Variable ${matches[1]} is not exist!")
+            }
+        }
+        println("renaming end: ${new_name}")
+        return new_name
+    }
+    private fun checkArrayIndex(value: String): Boolean {
+        val regular_array = "(?:[a-zA-Z]+[-_]*)+\\[(?:[a-zA-Z]+[-_]*)+\\]".toRegex()
+        val answer = regular_array.matches(value)
+        println("checking: ${answer}")
+        return answer
     }
 
     companion object {

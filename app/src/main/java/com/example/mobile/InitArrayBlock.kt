@@ -40,14 +40,23 @@ class InitArrayBlock(
         if (blockLength != null) {
             blockLength!!.variables = variables
             arrayLength = blockLength!!.executeBlock().toInt()
-        }
+        } else {
+            variableLength = getNormalizedName(variableLength, variables)
 
-        else if (variables[variableLength] == null) {
-            try {
-                arrayLength = variableLength.toInt()
+            if (variables[variableLength] == null) {
+                try {
+                    arrayLength = variableLength.toInt()
+                } catch (e: Exception) {
+                    throw Exception("ERROR: Variable $variableLength is not exist!")
+                }
             }
-            catch (e: Exception) {
-                throw Exception("ERROR: Variable $variableLength is not exist!")
+            else{
+                try {
+                    arrayLength = variables[variableLength]!!.toInt()
+                } catch (e: Exception) {
+                    throw Exception("ERROR: Variable $variableLength is not exist!")
+                }
+
             }
         }
 
@@ -114,6 +123,29 @@ class InitArrayBlock(
     fun setBlockLength(value: CodeBlock) {
         _valueBlockState.value = value
         blockLength = value
+    }
+
+    private fun getNormalizedName(name: String, variables: MutableMap<String, Double>): String {
+        val regular_name = "(?:[a-zA-Z]+[-_]*)+".toRegex()
+        var new_name = name
+        println("renaming start: ${new_name}")
+        if (checkArrayIndex(name)){
+            val matches = regular_name.findAll(name).map{it.value}.toList()
+            try {
+                new_name = "${matches[0]}[${variables[matches[1]]!!.toInt()}]"
+            }
+            catch (e: Exception) {
+                throw Exception("ERROR: Variable ${matches[1]} is not exist!")
+            }
+        }
+        println("renaming end: ${new_name}")
+        return new_name
+    }
+    private fun checkArrayIndex(value: String): Boolean {
+        val regular_array = "(?:[a-zA-Z]+[-_]*)+\\[(?:[a-zA-Z]+[-_]*)+\\]".toRegex()
+        val answer = regular_array.matches(value)
+        println("checking: ${answer}")
+        return answer
     }
 
     companion object {
