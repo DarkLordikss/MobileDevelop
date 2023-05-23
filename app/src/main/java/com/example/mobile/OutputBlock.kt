@@ -36,6 +36,7 @@ class OutputBlock(
 
     override fun executeBlock(): String {
         var normalValueToPrint = getNormalizedName(valueToPrint, variables)
+        println("norm name in outputBlock: ${normalValueToPrint}")
         val value = variables[normalValueToPrint]
 
         if (blockValue != null) {
@@ -43,7 +44,7 @@ class OutputBlock(
             addTextToList(textList = textList, newText = blockValue!!.executeBlock())
         }
         else if (value != null) {
-            addTextToList(textList = textList, newText = "VARIABLE $valueToPrint is $value")
+            addTextToList(textList = textList, newText = "VARIABLE $normalValueToPrint is $value")
         }
         else {
             addTextToList(textList = textList, newText = valueToPrint)

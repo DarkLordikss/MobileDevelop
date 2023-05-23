@@ -37,6 +37,7 @@ class VariableBlock(
 
     override fun executeBlock(): String {
         val _variableName = getNormalizedName(variableName, variables)
+        println("norm name in variableBlock: ${_variableName}")
 
         if (blockValue != null) {
             blockValue!!.variables = variables
@@ -115,7 +116,7 @@ class VariableBlock(
     }
 
     private fun getNormalizedName(name: String, variables: MutableMap<String, Double>): String {
-        val regular_name = "(?:\\w+[-_]*)+".toRegex()
+        val regular_name = "(?:[a-zA-Z]+[-_]*)+".toRegex()
         var new_name = name
         println("renaming start: ${new_name}")
         if (checkArrayIndex(name)){
@@ -131,7 +132,7 @@ class VariableBlock(
         return new_name
     }
     private fun checkArrayIndex(value: String): Boolean {
-        val regular_array = "(?:\\w+[-_]*)+\\[(?:[a-zA-Z]+[-_]*)+\\]".toRegex()
+        val regular_array = "(?:[a-zA-Z]+[-_]*)+\\[(?:[a-zA-Z]+[-_]*)+\\]".toRegex()
         val answer = regular_array.matches(value)
         println("checking: ${answer}")
         return answer

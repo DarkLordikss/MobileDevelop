@@ -63,6 +63,7 @@ class ArithmeticBlock (
 
         if (blockFirst == null) {
             var _variableFirst = getNormalizedName(variableFirst, variables)
+            println("norm name in arithBlock(left): ${_variableFirst}")
             firstOperand = variables[_variableFirst]
             if (firstOperand == null) {
                 try {
@@ -80,6 +81,7 @@ class ArithmeticBlock (
 
         if (blockSecond == null) {
             var _variableSecond = getNormalizedName(variableSecond, variables)
+            println("norm name in arithBlock(right): ${_variableSecond}")
             secondOperand = variables[_variableSecond]
             if (secondOperand == null) {
                 try {
