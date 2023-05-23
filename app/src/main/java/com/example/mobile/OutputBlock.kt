@@ -35,7 +35,7 @@ class OutputBlock(
     private val valueBlockState: State<CodeBlock?> = _valueBlockState
 
     override fun executeBlock(): String {
-        var normalValueToPrint = getNormalizedName(valueToPrint, variables)
+        val normalValueToPrint = getNormalizedName(valueToPrint, variables)
         println("norm name in outputBlock: ${normalValueToPrint}")
         val value = variables[normalValueToPrint]
 

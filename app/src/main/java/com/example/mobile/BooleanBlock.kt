@@ -63,13 +63,13 @@ class BooleanBlock(
 
         if (leftBlock == null) {
             var _leftVariable = getNormalizedName(leftVariable, variables)
-            firstOperand = variables[leftVariable]
+            firstOperand = variables[_leftVariable]
             if (firstOperand == null) {
                 try {
-                    firstOperand = leftVariable.toDouble()
+                    firstOperand = _leftVariable.toDouble()
                 }
                 catch (e: Exception){
-                    throw Exception("ERROR: Variable $leftVariable is not exist!")
+                    throw Exception("ERROR: Variable $_leftVariable is not exist!")
                 }
             }
         }
@@ -79,14 +79,14 @@ class BooleanBlock(
         }
 
         if (rightBlock == null) {
-            var _rightVariable = getNormalizedName(rightVariable, variables)
+            val _rightVariable = getNormalizedName(rightVariable, variables)
             secondOperand = variables[_rightVariable]
             if (secondOperand == null) {
                 try {
-                    secondOperand = rightVariable.toDouble()
+                    secondOperand = _rightVariable.toDouble()
                 }
                 catch (e: Exception){
-                    throw Exception("ERROR: Variable $rightVariable is not exist!")
+                    throw Exception("ERROR: Variable $_rightVariable is not exist!")
                 }
             }
         }

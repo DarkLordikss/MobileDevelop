@@ -62,15 +62,15 @@ class ArithmeticBlock (
 
 
         if (blockFirst == null) {
-            var _variableFirst = getNormalizedName(variableFirst, variables)
+            val _variableFirst = getNormalizedName(variableFirst, variables)
             println("norm name in arithBlock(left): ${_variableFirst}")
             firstOperand = variables[_variableFirst]
             if (firstOperand == null) {
                 try {
-                    firstOperand = variableFirst.toDouble()
+                    firstOperand = _variableFirst.toDouble()
                 }
                 catch (e: Exception){
-                    throw Exception("ERROR: Variable $variableFirst is not exist!")
+                    throw Exception("ERROR: Variable $_variableFirst is not exist!")
                 }
             }
         }
