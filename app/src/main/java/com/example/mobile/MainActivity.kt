@@ -1,6 +1,7 @@
 package com.example.mobile
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,6 +27,7 @@ import com.example.mobile.ui.theme.White00
 class StartScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContent {
             MobileTheme {
                 Surface(modifier = Modifier.fillMaxSize(),
