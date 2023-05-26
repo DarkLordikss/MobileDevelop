@@ -21,43 +21,53 @@ import androidx.compose.ui.unit.dp
 import com.example.mobile.ui.theme.White00
 import java.io.Serializable
 
-class VariableBlock(
+class InitArrayBlock(
     variables: MutableMap<String, Double> = mutableMapOf(),
     private var variableName: String = "",
-    private var variableValue: String = "",
-    private var blockValue: CodeBlock? = null,
+    private var variableLength: String = "",
+    private var blockLength: CodeBlock? = null,
 ) : CodeBlock(variables), Serializable {
     private var _nameState = mutableStateOf(variableName)
-    private var _valueState = mutableStateOf(variableValue)
-    private var _valueBlockState = mutableStateOf(blockValue)
+    private var _valueState = mutableStateOf(variableLength)
+    private var _valueBlockState = mutableStateOf(blockLength)
 
     private val nameState: State<String> = _nameState
     private val valueState: State<String> = _valueState
     private val valueBlockState: State<CodeBlock?> = _valueBlockState
 
     override fun executeBlock(): String {
-        val _variableName = getNormalizedName(variableName, variables)
-        println("norm name in variableBlock: ${_variableName}")
-
-        if (blockValue != null) {
-            blockValue!!.variables = variables
-            val newValue = blockValue!!.executeBlock().toDouble()
-            try {
-                variables[_variableName] = newValue
-            } catch (e: Exception) {
-                throw Exception("ERROR: Variable ${_variableName} is not exist!")
-            }
+        var arrayLength = 0
+        if (blockLength != null) {
+            blockLength!!.variables = variables
+            arrayLength = blockLength!!.executeBlock().toInt()
         } else {
-            val _variableValue = getNormalizedName(variableValue, variables)
-            if (variables[_variableValue] == null) {
+            var _variableLength = getNormalizedName(variableLength, variables)
+
+            if (variables[_variableLength] == null) {
                 try {
-                    variables[_variableName] = _variableValue.toDouble()
+                    arrayLength = variableLength.toInt()
                 } catch (e: Exception) {
-                    throw Exception("ERROR: Variable $_variableValue is not exist!")
+                    throw Exception("ERROR: Variable $variableLength is not exist!")
                 }
-            } else {
-                variables[_variableName] = variables[_variableValue]!!
             }
+            else{
+                try {
+                    arrayLength = variables[_variableLength]!!.toInt()
+                } catch (e: Exception) {
+                    throw Exception("ERROR: Variable $variableLength is not exist!")
+                }
+
+            }
+        }
+
+        if (arrayLength < 0){
+            throw Exception("ERROR: array length cn npt be less than 0!")
+        }
+
+        var i = 0
+        while (i < arrayLength){
+            variables[variableName+"["+i+"]"] = 0.0
+            i ++
         }
 
         return ""
@@ -89,9 +99,9 @@ class VariableBlock(
                     modifier = Modifier.width(100.dp),
                     value = valueState.value,
                     onValueChange = { newValue ->
-                        setVariableValue(newValue)
+                        setVariableLength(newValue)
                     },
-                    label = { Text("Value", color = White00) }
+                    label = { Text("Length", color = White00) }
                 )
             }
             else {
@@ -105,14 +115,14 @@ class VariableBlock(
         variableName = name
     }
 
-    private fun setVariableValue(value: String) {
+    private fun setVariableLength(value: String) {
         _valueState.value = value
-        variableValue = value
+        variableLength = value
     }
 
-    fun setBlockValue(value: CodeBlock) {
+    fun setBlockLength(value: CodeBlock) {
         _valueBlockState.value = value
-        blockValue = value
+        blockLength = value
     }
 
     private fun getNormalizedName(name: String, variables: MutableMap<String, Double>): String {
@@ -139,6 +149,6 @@ class VariableBlock(
     }
 
     companion object {
-        private const val serialVersionUID = 123456L
+        private const val serialVersionUID = 123499L
     }
 }

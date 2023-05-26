@@ -62,13 +62,14 @@ class BooleanBlock(
         val conditionID = conditionsArray[condition]
 
         if (leftBlock == null) {
-            firstOperand = variables[leftVariable]
+            var _leftVariable = getNormalizedName(leftVariable, variables)
+            firstOperand = variables[_leftVariable]
             if (firstOperand == null) {
                 try {
-                    firstOperand = leftVariable.toDouble()
+                    firstOperand = _leftVariable.toDouble()
                 }
                 catch (e: Exception){
-                    throw Exception("ERROR: Variable $leftVariable is not exist!")
+                    throw Exception("ERROR: Variable $_leftVariable is not exist!")
                 }
             }
         }
@@ -78,13 +79,14 @@ class BooleanBlock(
         }
 
         if (rightBlock == null) {
-            secondOperand = variables[rightVariable]
+            val _rightVariable = getNormalizedName(rightVariable, variables)
+            secondOperand = variables[_rightVariable]
             if (secondOperand == null) {
                 try {
-                    secondOperand = rightVariable.toDouble()
+                    secondOperand = _rightVariable.toDouble()
                 }
                 catch (e: Exception){
-                    throw Exception("ERROR: Variable $rightVariable is not exist!")
+                    throw Exception("ERROR: Variable $_rightVariable is not exist!")
                 }
             }
         }
@@ -247,6 +249,29 @@ class BooleanBlock(
     fun setSecondBlock(block: CodeBlock) {
         _rightBlockState.value = block
         rightBlock = block
+    }
+
+    private fun getNormalizedName(name: String, variables: MutableMap<String, Double>): String {
+        val regular_name = "(?:[a-zA-Z][-_]*)+".toRegex()
+        var new_name = name
+        println("renaming start: ${new_name}")
+        if (checkArrayIndex(name)){
+            val matches = regular_name.findAll(name).map{it.value}.toList()
+            try {
+                new_name = "${matches[0]}[${variables[matches[1]]!!.toInt()}]"
+            }
+            catch (e: Exception) {
+                throw Exception("ERROR: Variable ${matches[1]} is not exist!")
+            }
+        }
+        println("renaming end: ${new_name}")
+        return new_name
+    }
+    private fun checkArrayIndex(value: String): Boolean {
+        val regular_array = "(?:[a-zA-Z][-_]*)+\\[(?:[a-zA-Z]+[-_]*)+\\]".toRegex()
+        val answer = regular_array.matches(value)
+        println("checking: ${answer}")
+        return answer
     }
 
     companion object {

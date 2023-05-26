@@ -86,14 +86,13 @@ fun DynamicTextDisplay(textList: MutableList<String>) {
                         color = Red00
                     )
                 }
-                else if (text.slice(0..7) == "VARIABLE") {
+            }
+            if (text.length >= 8) {
+                if (text.slice(0..7) == "VARIABLE") {
                     Text(
                         text = text,
                         color = Green00
                     )
-                }
-                else {
-                    Text(text = text)
                 }
             }
             else {

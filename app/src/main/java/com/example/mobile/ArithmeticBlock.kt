@@ -60,14 +60,17 @@ class ArithmeticBlock (
 
         val operId = operatorsArray[myOperator]
 
+
         if (blockFirst == null) {
-            firstOperand = variables[variableFirst]
+            val _variableFirst = getNormalizedName(variableFirst, variables)
+            println("norm name in arithBlock(left): ${_variableFirst}")
+            firstOperand = variables[_variableFirst]
             if (firstOperand == null) {
                 try {
-                    firstOperand = variableFirst.toDouble()
+                    firstOperand = _variableFirst.toDouble()
                 }
                 catch (e: Exception){
-                    throw Exception("ERROR: Variable $variableFirst is not exist!")
+                    throw Exception("ERROR: Variable $_variableFirst is not exist!")
                 }
             }
         }
@@ -77,7 +80,9 @@ class ArithmeticBlock (
         }
 
         if (blockSecond == null) {
-            secondOperand = variables[variableSecond]
+            var _variableSecond = getNormalizedName(variableSecond, variables)
+            println("norm name in arithBlock(right): ${_variableSecond}")
+            secondOperand = variables[_variableSecond]
             if (secondOperand == null) {
                 try {
                     secondOperand = variableSecond.toDouble()
@@ -209,6 +214,29 @@ class ArithmeticBlock (
     fun setSecondBlock(block: CodeBlock) {
         _secondBlockState.value = block
         blockSecond = block
+    }
+
+    private fun getNormalizedName(name: String, variables: MutableMap<String, Double>): String {
+        val regular_name = "(?:[a-zA-Z]+[-_]*)+".toRegex()
+        var new_name = name
+        println("renaming start: ${new_name}")
+        if (checkArrayIndex(name)){
+            val matches = regular_name.findAll(name).map{it.value}.toList()
+            try {
+                new_name = "${matches[0]}[${variables[matches[1]]!!.toInt()}]"
+            }
+            catch (e: Exception) {
+                throw Exception("ERROR: Variable ${matches[1]} is not exist!")
+            }
+        }
+        println("renaming end: ${new_name}")
+        return new_name
+    }
+    private fun checkArrayIndex(value: String): Boolean {
+        val regular_array = "(?:[a-zA-Z]+[-_]*)+\\[(?:[a-zA-Z]+[-_]*)+\\]".toRegex()
+        val answer = regular_array.matches(value)
+        println("checking: ${answer}")
+        return answer
     }
 
     companion object {
